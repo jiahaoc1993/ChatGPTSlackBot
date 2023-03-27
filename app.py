@@ -20,22 +20,28 @@ chatbot = Chatbot(**ChatGPTConfig)
 @app.event("app_mention")
 def event_test(event, say):
     prompt = re.sub("\\s<@[^, ]*|^<@[^, ]*", "", event["text"])
-    try:
-        count = 0
-        user = event["user"]
-        original_message_ts = event["ts"]
 
-        for response in chatbot.ask_stream(prompt):
-            # only @ someone once
-            if count == 0:
-                send = f"<@{user}> {response}"
-                count += 1
-            else:
-                send += f"{response}"
+    # recreate bot
+    if prompt == "/new":
+       chatbot = Chatbot(**ChatGPTConfig) 
+       send = "Session reset"
+    else:
+        try:
+            count = 0
+            user = event["user"]
+            original_message_ts = event["ts"]
 
-    except Exception as e:
-        print(e)
-        send = "We're experiencing exceptionally high demand. Please, try again."
+            for response in chatbot.ask_stream(prompt):
+                # only @ someone once
+                if count == 0:
+                    send = f"<@{user}> {response}"
+                    count += 1
+                else:
+                    send += f"{response}"
+
+        except Exception as e:
+            print(e)
+            send = "We're experiencing exceptionally high demand. Please, try again."
 
     say(send, thread_ts=original_message_ts)
 
