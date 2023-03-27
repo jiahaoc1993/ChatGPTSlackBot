@@ -23,7 +23,9 @@ def event_test(event, say):
     try:
         count = 0
         user = event["user"]
-        for response in chatbot.ask(prompt):
+        original_message_ts = event["ts"]
+
+        for response in chatbot.ask_stream(prompt):
             # only @ someone once
             if count == 0:
                 send = f"<@{user}> {response}"
@@ -33,11 +35,11 @@ def event_test(event, say):
 
             # Get the `ts` value of the original message
             # Use the `app.event` method to send a reply to the message thread
-            original_message_ts = event["ts"]
             say(send, thread_ts=original_message_ts)
     except Exception as e:
         print(e)
         send = "We're experiencing exceptionally high demand. Please, try again."
+        say(send, thread_ts=original_message_ts)
 
     
 
