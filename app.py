@@ -31,15 +31,13 @@ def event_test(event, say):
                 send = f"<@{user}> {response}"
                 count += 1
             else:
-                send = f"{response}"
+                send += f"{response}"
 
-            # Get the `ts` value of the original message
-            # Use the `app.event` method to send a reply to the message thread
-            say(send, thread_ts=original_message_ts)
     except Exception as e:
         print(e)
         send = "We're experiencing exceptionally high demand. Please, try again."
-        say(send, thread_ts=original_message_ts)
+
+    say(send, thread_ts=original_message_ts)
 
     
 
