@@ -22,7 +22,7 @@ def event_test(event, say):
     prompt = re.sub("\\s<@[^, ]*|^<@[^, ]*", "", event["text"])
 
     # recreate bot
-    if prompt == "/new":
+    if prompt == "<<new":
        chatbot = Chatbot(**ChatGPTConfig) 
        send = "Session reset"
     else:
@@ -50,7 +50,6 @@ def event_test(event, say):
 def chatgpt_refresh():
     while True:
         time.sleep(60)
-
 
 if __name__ == "__main__":
     thread = Thread(target=chatgpt_refresh)
