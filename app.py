@@ -64,4 +64,4 @@ def chatgpt_refresh():
 if __name__ == "__main__":
     thread = Thread(target=chatgpt_refresh)
     thread.start()
-    app.start(4000)  # POST http://localhost:4000/slack/events
+    app.start(4000)  # POST http://localhost:4000/slack/events, event in your command configuration page.
