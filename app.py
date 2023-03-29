@@ -32,7 +32,7 @@ def event_test(event, say):
     root.info(prompt)
 
     # recreate bot
-    if prompt == f" \new":
+    if prompt.lstrip() == '\new':
        global chatbot
        chatbot = Chatbot(**ChatGPTConfig) 
        send = f"<@{user}> Session reset"
