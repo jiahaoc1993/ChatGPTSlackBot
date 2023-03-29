@@ -33,6 +33,7 @@ def event_test(event, say):
 
     # recreate bot
     if prompt == "&lt;&lt;new":
+       global chatbot
        chatbot = Chatbot(**ChatGPTConfig) 
        send = "Session reset"
     else:
