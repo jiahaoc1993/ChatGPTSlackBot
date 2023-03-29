@@ -9,10 +9,9 @@ import logging
 import sys
 
 root = logging.getLogger()
-root.setLevel(logging.DEBUG)
+root.setLevel(logging.INFO)
 
 handler = logging.StreamHandler(sys.stdout)
-handler.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
 root.addHandler(handler)
@@ -33,7 +32,7 @@ def event_test(event, say):
     root.info(prompt)
 
     # recreate bot
-    if prompt == "<<new":
+    if prompt == "&lt;&lt;new":
        chatbot = Chatbot(**ChatGPTConfig) 
        send = "Session reset"
     else:
@@ -41,7 +40,6 @@ def event_test(event, say):
             count = 0
             user = event["user"]
             original_message_ts = event["ts"]
-            '''
             for response in chatbot.ask_stream(prompt):
                 # only @ someone once
                 if count == 0:
@@ -49,7 +47,6 @@ def event_test(event, say):
                     count += 1
                 else:
                     send += f"{response}"
-            '''
         except Exception as e:
             print(e)
             send = "We're experiencing exceptionally high demand. Please, try again."
