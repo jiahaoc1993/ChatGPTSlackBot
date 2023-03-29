@@ -5,6 +5,7 @@ from threading import Thread
 
 from revChatGPT.V3 import Chatbot
 from slack_bolt import App
+import logging
 
 ChatGPTConfig = {
     "api_key": os.getenv("OPENAI_API_KEY"),
@@ -13,13 +14,15 @@ ChatGPTConfig = {
 if os.getenv("OPENAI_ENGINE"):
     ChatGPTConfig["engine"] = os.getenv("OPENAI_ENGINE")
 
-app = App()
+app = App(logger=logging.Logger("slack_bolt"))
 chatbot = Chatbot(**ChatGPTConfig)
 
+logger = logging.getLogger("slack_bolt")
 
 @app.event("app_mention")
 def event_test(event, say):
     prompt = re.sub("\\s<@[^, ]*|^<@[^, ]*", "", event["text"])
+    logger.info(prompt)
 
     # recreate bot
     if prompt == "<<new":
