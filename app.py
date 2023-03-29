@@ -6,6 +6,16 @@ from threading import Thread
 from revChatGPT.V3 import Chatbot
 from slack_bolt import App
 import logging
+import sys
+
+root = logging.getLogger()
+root.setLevel(logging.DEBUG)
+
+handler = logging.StreamHandler(sys.stdout)
+handler.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+root.addHandler(handler)
 
 ChatGPTConfig = {
     "api_key": os.getenv("OPENAI_API_KEY"),
@@ -14,15 +24,13 @@ ChatGPTConfig = {
 if os.getenv("OPENAI_ENGINE"):
     ChatGPTConfig["engine"] = os.getenv("OPENAI_ENGINE")
 
-app = App(logger=logging.Logger("slack_bolt"))
+app = App(logger=root)
 chatbot = Chatbot(**ChatGPTConfig)
-
-logger = logging.getLogger("slack_bolt")
 
 @app.event("app_mention")
 def event_test(event, say):
     prompt = re.sub("\\s<@[^, ]*|^<@[^, ]*", "", event["text"])
-    logger.info(prompt)
+    root.info(prompt)
 
     # recreate bot
     if prompt == "<<new":
@@ -33,7 +41,7 @@ def event_test(event, say):
             count = 0
             user = event["user"]
             original_message_ts = event["ts"]
-
+            '''
             for response in chatbot.ask_stream(prompt):
                 # only @ someone once
                 if count == 0:
@@ -41,7 +49,7 @@ def event_test(event, say):
                     count += 1
                 else:
                     send += f"{response}"
-
+            '''
         except Exception as e:
             print(e)
             send = "We're experiencing exceptionally high demand. Please, try again."
