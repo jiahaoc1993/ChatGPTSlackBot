@@ -8,5 +8,7 @@ services:
     container_name: chatgptslackbot
     env_file:
       - ./variables.env
+    volumes:
+      - ./app.py:/app/app.py 
     ports:
       - "4000:4000"
