@@ -26,31 +26,32 @@ if os.getenv("OPENAI_ENGINE"):
 app = App(logger=root)
 chatbot = Chatbot(**ChatGPTConfig)
 
+@app.command("/new")
+def command_test(ack, say):
+    global chatbot
+    chatbot = Chatbot(**ChatGPTConfig)
+    ack()
+    say("session reset successfully.")
+
 @app.event("app_mention")
 def event_test(event, say):
     prompt = re.sub("\\s<@[^, ]*|^<@[^, ]*", "", event["text"])
     root.info(prompt)
 
-    # recreate bot
-    if prompt.lstrip() == '\new':
-       global chatbot
-       chatbot = Chatbot(**ChatGPTConfig) 
-       send = f"<@{user}> Session reset"
-    else:
-        try:
-            count = 0
-            user = event["user"]
-            original_message_ts = event["ts"]
-            for response in chatbot.ask_stream(prompt):
-                # only @ someone once
-                if count == 0:
-                    send = f"<@{user}> {response}"
-                    count += 1
-                else:
-                    send += f"{response}"
-        except Exception as e:
-            print(e)
-            send = "We're experiencing exceptionally high demand. Please, try again."
+    try:
+        count = 0
+        user = event["user"]
+        original_message_ts = event["ts"]
+        for response in chatbot.ask_stream(prompt):
+            # only @ someone once
+            if count == 0:
+                send = f"<@{user}> {response}"
+                count += 1
+            else:
+                send += f"{response}"
+    except Exception as e:
+        print(e)
+        send = "we're experiencing exceptionally high demand. Please, try again."
 
     say(send, thread_ts=original_message_ts)
 
